@@ -2,10 +2,9 @@
 
 @using ToolsApp.Core.Interfaces.Models
 @using ToolsApp.Models
+@using ToolsApp.Components.Shared
 
-<header>
-  <h3>Color Tool</h3>
-</header>
+<ToolHeader HeaderText="@colorToolHeader"></ToolHeader>
 
 <ul>
   @foreach(var color in Colors)
@@ -27,6 +26,8 @@
 </form>
 
 @code {
+
+  private string colorToolHeader = "Color Tool";
 
   private ColorFormModel colorForm = new();
 
