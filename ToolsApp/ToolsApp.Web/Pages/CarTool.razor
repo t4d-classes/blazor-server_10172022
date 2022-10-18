@@ -7,7 +7,7 @@
 
 <ToolHeader HeaderText="Car Tool" />
 
-<CarTable Cars="@Cars" OnDeleteCar="@DeleteCar" />
+<CarTable Cars="@Cars" EditCarId="@editCarId" OnEditCar="@EditCar" OnDeleteCar="@DeleteCar" />
 
 <form>
   <label>
@@ -37,10 +37,17 @@
 
   private CarFormModel carForm = new();
 
+  private int editCarId { get; set; } = -1;
+
   public List<ICar> Cars { get; set; } = new List<ICar>() {
     new Car() { Id = 1, Make="Ford", Model="Fusion Hybrid", Year=2020, Color="Blue", Price=45000 },
     new Car() { Id = 2, Make="Tesla", Model="S", Year=2022, Color="Red", Price=115000 },
   };
+
+  public void EditCar(int carId)
+  {
+    editCarId = carId;
+  }
 
   public void AddCar()
   {
