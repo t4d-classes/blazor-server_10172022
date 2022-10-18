@@ -3,7 +3,7 @@
 <ul>
   @foreach (var color in Colors)
   {
-    <li>@color.Name - @color.HexCode</li>
+    <li>@(color.Name + " - " + @color.HexCode)</li>
   }
 </ul>
 
