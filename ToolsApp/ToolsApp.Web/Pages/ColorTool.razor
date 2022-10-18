@@ -3,15 +3,11 @@
 @using ToolsApp.Core.Interfaces.Models
 @using ToolsApp.Models
 @using ToolsApp.Components.Shared
+@using ToolsApp.Components.ColorTool
 
 <ToolHeader HeaderText="@colorToolHeader"></ToolHeader>
 
-<ul>
-  @foreach(var color in Colors)
-  {
-    <li>@color.Name - @color.HexCode</li>
-  }
-</ul>
+<ColorList Colors="@Colors" />
 
 <form>
   <label>
