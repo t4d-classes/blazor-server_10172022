@@ -7,7 +7,7 @@
 
 <ToolHeader HeaderText="Car Tool" />
 
-<CarTable Cars="@Cars" />
+<CarTable Cars="@Cars" OnDeleteCar="@DeleteCar" />
 
 <form>
   <label>
@@ -53,6 +53,11 @@
         Color = carForm.Color,
         Price = carForm.Price,
       });
+  }
+
+  public void DeleteCar(int carId)
+  {
+    Cars.Remove(Cars.Find(car => car.Id == carId));
   }
 
   class CarFormModel {

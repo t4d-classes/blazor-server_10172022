@@ -3,11 +3,24 @@
 <ul>
   @foreach (var color in Colors)
   {
-    <li>@(color.Name + " - " + @color.HexCode)</li>
+    <li>
+      @(color.Name + " - " + @color.HexCode)
+      <button type="button"
+        @onclick="@(() => deleteColor(color.Id))">X</button>
+    </li>
   }
 </ul>
 
 @code {
   [Parameter]
   public IEnumerable<IColor> Colors { get; set; } = new List<IColor>();
+
+  [Parameter]
+  public EventCallback<int> OnDeleteColor { get; set; }
+
+  private async Task deleteColor(int colorId) 
+  {
+    await OnDeleteColor.InvokeAsync(colorId);
+  }
+
 }
