@@ -1,10 +1,14 @@
-﻿using ToolsApp.Core.Interfaces.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+
+using ToolsApp.Core.Interfaces.Models;
 
 namespace ToolsApp.Core.Interfaces.Data;
 
 public interface IColorsData
 {
-  IEnumerable<IColor> All();
-  IColor Append(INewColor newColor);
-  void Remove(int colorId);
+  Task<IEnumerable<IColor>> All();
+  Task<IColor> Append(INewColor newColor);
+  Task Remove(int colorId);
 }

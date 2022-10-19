@@ -2,38 +2,64 @@
 using ToolsApp.Core.Interfaces.Models;
 using ToolsApp.Models;
 
+using ColorModel = ToolsApp.Models.Color;
+using ColorDataModel = ToolsApp.Data.Models.Color;
+using AutoMapper;
+
 namespace ToolsApp.Data
 {
   public class ColorsInMemoryData : IColorsData
   {
-    private List<IColor> _colors { get; set; } = new List<IColor>() {
-      new Color() { Id = 1, Name = "red", HexCode = "ff0000" },
-      new Color() { Id = 2, Name = "green", HexCode = "00ff00" },
-      new Color() { Id = 3, Name = "blue", HexCode = "0000ff" },
+    private IMapper _mapper;
+
+    private List<ColorDataModel> _colors { get; set; } = new List<ColorDataModel>() {
+      new ColorDataModel() { Id = 1, Name = "red", HexCode = "ff0000" },
+      new ColorDataModel() { Id = 2, Name = "green", HexCode = "00ff00" },
+      new ColorDataModel() { Id = 3, Name = "blue", HexCode = "0000ff" },
     };
 
-    public IEnumerable<IColor> All()
+    public ColorsInMemoryData()
     {
-      return _colors;
+      var mapperConfig = new MapperConfiguration(config => {
+        config.CreateMap<INewColor, ColorDataModel>();
+        config.CreateMap<IColor, ColorDataModel>();
+        config.CreateMap<ColorDataModel, ColorModel>().ReverseMap();
+      });
+
+      _mapper = mapperConfig.CreateMapper();
     }
 
-    public IColor Append(INewColor newColor)
+    public Task<IEnumerable<IColor>> All()
     {
-      var color = new Color()
-      {
-        Id = _colors.Any() ? _colors.Max(c => c.Id) + 1 : 1,
-        Name = newColor.Name,
-        HexCode = newColor.HexCode,
-      };
+      return Task.FromResult(
+        _colors.Select(
+          colorDataModel => _mapper.Map<ColorDataModel, ColorModel>(colorDataModel)
+        )
+        .AsEnumerable<IColor>()
+      );
+    }
 
-      _colors.Add(color);
+    public Task<IColor> Append(INewColor newColor)
+    {
+      var newColorDataModel = _mapper.Map<ColorDataModel>(newColor);
+      newColorDataModel.Id = _colors.Any() ? _colors.Max(c => c.Id) + 1 : 1;
+
+      _colors.Add(newColorDataModel);
   
-      return color;
+      return Task.FromResult(
+        _mapper.Map<ColorDataModel, ColorModel>(newColorDataModel) as IColor);
     }
 
-    public void Remove(int colorId)
+    public Task Remove(int colorId)
     {
-      _colors.Remove(_colors.Find(color => color.Id == colorId));
+      var colorIndex = _colors.FindIndex(color => color.Id == colorId);
+      if (colorIndex == -1)
+      {
+        throw new IndexOutOfRangeException("Color not found");
+      }
+
+      _colors.RemoveAt(colorIndex);
+      return Task.CompletedTask;
     }
   }
 }

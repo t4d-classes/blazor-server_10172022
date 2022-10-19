@@ -17,21 +17,21 @@
 
   private IEnumerable<IColor> colors { get; set; } = new List<IColor>();
 
-  protected override void OnInitialized()
+  protected override async Task OnInitializedAsync()
   {
-    colors = colorsInMemoryData.All();
+    colors = await colorsInMemoryData.All();
   }
 
-  public void AddColor(INewColor newColor)
+  public async Task AddColor(INewColor newColor)
   {
-    colorsInMemoryData.Append(newColor);
-    colors = colorsInMemoryData.All();
+    await colorsInMemoryData.Append(newColor);
+    colors = await colorsInMemoryData.All();
   }
 
-  public void DeleteColor(int colorId)
+  public async Task DeleteColor(int colorId)
   {
-    colorsInMemoryData.Remove(colorId);
-    colors = colorsInMemoryData.All();
+    await colorsInMemoryData.Remove(colorId);
+    colors = await colorsInMemoryData.All();
   }
 
 
