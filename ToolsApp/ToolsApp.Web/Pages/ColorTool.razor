@@ -1,7 +1,10 @@
 ﻿@page "/color-tool"
+@using ToolsApp.Core.Interfaces.Data
+
+@inject IColorsData colorsInMemoryData
 
 <ToolHeader HeaderText="@colorToolHeader"></ToolHeader>
-<ColorList Colors="@Colors" OnDeleteColor="@DeleteColor" />
+<ColorList Colors="@colors" OnDeleteColor="@DeleteColor" />
 <ColorForm ButtonText="Add Color" OnSubmitColor="@AddColor" />
 
 @*@if (true) {
@@ -12,29 +15,23 @@
 
   private string colorToolHeader = "Color Tool";
 
+  private IEnumerable<IColor> colors { get; set; } = new List<IColor>();
 
-
-  public List<IColor> Colors { get; set; } = new List<IColor>() {
-    new Color() { Id = 1, Name = "red", HexCode = "ff0000" },
-    new Color() { Id = 2, Name = "green", HexCode = "00ff00" },
-    new Color() { Id = 3, Name = "blue", HexCode = "0000ff" },
-  };
+  protected override void OnInitialized()
+  {
+    colors = colorsInMemoryData.All();
+  }
 
   public void AddColor(INewColor newColor)
   {
-    var color = new Color()
-      {
-        Id = Colors.Any() ? Colors.Max(c => c.Id) + 1 : 1,
-        Name = newColor.Name,
-        HexCode = newColor.HexCode,
-      };
-
-    Colors.Add(color);
+    colorsInMemoryData.Append(newColor);
+    colors = colorsInMemoryData.All();
   }
 
   public void DeleteColor(int colorId)
   {
-    Colors.Remove(Colors.Find(color => color.Id == colorId));
+    colorsInMemoryData.Remove(colorId);
+    colors = colorsInMemoryData.All();
   }
 
 
