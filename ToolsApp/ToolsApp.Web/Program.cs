@@ -1,17 +1,33 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+
+using Microsoft.EntityFrameworkCore;
+
 using ToolsApp.Core.Interfaces.Data;
 using ToolsApp.Data;
 using ToolsApp.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Scoped Service
+builder.Services.AddDbContext<ToolsAppDbContext>(options => {
+  options.UseSqlServer(builder.Configuration["ConnectionString"]);
+});
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<IColorsData, ColorsInMemoryData>();
+//builder.Services.AddSingleton<IColorsData, ColorsInMemoryData>();
+
+
+builder.Services.AddScoped<IColorsData, ColorsSqlDatabaseData>();
+
+
 builder.Services.AddSingleton<ICarsData, CarsInMemoryData>();
+
+
 
 var app = builder.Build();
 
