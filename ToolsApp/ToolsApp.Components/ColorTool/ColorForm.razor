@@ -3,17 +3,24 @@
 @using ToolsApp.Core.Interfaces.Models
 @using ToolsApp.Models;
 
-<form>
+<EditForm Model="@colorForm" OnValidSubmit="@submitColor">
+
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+
   <label>
     Name:
-    <input type="text" @bind="@colorForm.Name" />
+    <InputText @bind-Value="colorForm.Name" />
   </label>
+  
   <label>
     Hex Code:
-    <input type="text" @bind="@colorForm.HexCode" />
+    <InputText @bind-Value="colorForm.HexCode" />
   </label>
-  <button type="button" @onclick="@submitColor">@ButtonText</button>
-</form>
+  
+  <button>@ButtonText</button>
+
+</EditForm>
 
 @code {
 
@@ -43,7 +50,9 @@
 
   class ColorFormModel
   {
+    [Required]
     public string Name { get; set; }
+    [Required]
     public string HexCode { get; set; }
   }
 
