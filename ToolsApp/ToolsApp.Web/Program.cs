@@ -19,13 +19,23 @@ builder.Services.AddDbContext<ToolsAppDbContext>(options => {
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-//builder.Services.AddSingleton<IColorsData, ColorsInMemoryData>();
 
 
-builder.Services.AddScoped<IColorsData, ColorsSqlDatabaseData>();
+if (builder.Configuration["ConnectionString"] == "in-memory")
+{
+  //builder.Services.AddSingleton<IColorsData, ColorsInMemoryData>();
+  //builder.Services.AddSingleton<ICarsData, CarsInMemoryData>();
+}
+else
+{
+  builder.Services.AddScoped<IColorsData, ColorsSqlDatabaseData>();
+  builder.Services.AddScoped<ICarsData, CarsSqlDatabaseData>();
+}
 
 
-builder.Services.AddSingleton<ICarsData, CarsInMemoryData>();
+
+
+
 
 
 

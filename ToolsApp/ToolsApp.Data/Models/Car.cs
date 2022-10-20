@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToolsApp.Data.Models
 {
+  [Table("Car")]
   public class Car
   {
     public int Id { get; set; }
