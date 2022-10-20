@@ -1,4 +1,6 @@
-﻿@using ToolsApp.Core.Interfaces.Models
+﻿@using AutoMapper;
+
+@using ToolsApp.Core.Interfaces.Models
 @using ToolsApp.Models;
 
 <form>
@@ -21,15 +23,22 @@
   [Parameter]
   public EventCallback<INewColor> OnSubmitColor { get; set; }
 
+  private IMapper mapper;
+
   private ColorFormModel colorForm = new();
+
+  protected override void OnInitialized()
+  {
+    var mapperConfig = new MapperConfiguration(config => {
+      config.CreateMap<ColorFormModel, NewColor>();
+    });
+
+    mapper = mapperConfig.CreateMapper();
+  }
 
   private async Task submitColor()
   {
-    await OnSubmitColor.InvokeAsync(new NewColor
-      {
-        Name = colorForm.Name,
-        HexCode = colorForm.HexCode,
-      });
+    await OnSubmitColor.InvokeAsync(mapper.Map<NewColor>(colorForm));
   }
 
   class ColorFormModel

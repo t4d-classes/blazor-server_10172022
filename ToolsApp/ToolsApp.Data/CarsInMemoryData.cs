@@ -2,46 +2,71 @@
 using ToolsApp.Core.Interfaces.Models;
 using ToolsApp.Models;
 
+using CarModel = ToolsApp.Models.Car;
+using CarDataModel = ToolsApp.Data.Models.Car;
+using AutoMapper;
+using ToolsApp.Data.Models;
+
 namespace ToolsApp.Data
 {
   public class CarsInMemoryData : ICarsData
   {
-    private List<ICar> _cars { get; set; } = new List<ICar>() {
-      new Car() { Id = 1, Make="Ford", Model="Fusion Hybrid", Year=2020, Color="Blue", Price=45000 },
-      new Car() { Id = 2, Make="Tesla", Model="S", Year=2022, Color="Red", Price=115000 },
+    private IMapper _mapper;
+    private List<CarDataModel> _cars { get; set; } = new() {
+      new() { Id = 1, Make="Ford", Model="Fusion Hybrid", Year=2020, Color="Blue", Price=45000 },
+      new() { Id = 2, Make="Tesla", Model="S", Year=2022, Color="Red", Price=115000 },
     };
 
-    public IEnumerable<ICar> All()
+    public CarsInMemoryData()
     {
-      return _cars;
+      var mapperConfig = new MapperConfiguration(config => {
+        config.CreateMap<INewCar, CarDataModel>();
+        config.CreateMap<ICar, CarDataModel>();
+        config.CreateMap<CarDataModel, CarModel>().ReverseMap();
+      });
+
+      _mapper = mapperConfig.CreateMapper();
     }
 
-    public ICar Append(INewCar newCar)
+    public Task<IEnumerable<ICar>> All()
     {
-      var car = new Car()
-      {
-        Id = _cars.Any() ? _cars.Max(c => c.Id) + 1 : 1,
-        Make = newCar.Make,
-        Model = newCar.Model,
-        Year = newCar.Year,
-        Color = newCar.Color,
-        Price = newCar.Price,
-      };
-
-      _cars.Add(car);
-  
-      return car;
+      return Task.FromResult(_cars.Select(
+          carDataModel => _mapper.Map<CarDataModel, CarModel>(carDataModel)
+        ).AsEnumerable<ICar>());
     }
 
-    public void Replace(ICar car)
+    public Task<ICar> Append(INewCar newCar)
+    {
+      var newCarDataModel = _mapper.Map<CarDataModel>(newCar);
+      newCarDataModel.Id = _cars.Any() ? _cars.Max(c => c.Id) + 1 : 1;
+
+      _cars.Add(newCarDataModel);
+
+      return Task.FromResult(
+        _mapper.Map<CarDataModel, CarModel>(newCarDataModel) as ICar);
+    }
+
+    public Task Replace(ICar car)
     {
       var carIndex = _cars.FindIndex(c => c.Id == car.Id);
-      _cars[carIndex] = car;
+      if (carIndex == -1)
+      {
+        throw new IndexOutOfRangeException("Car not found");
+      }
+      _cars[carIndex] = _mapper.Map<CarDataModel>(car);
+      return Task.CompletedTask;
     }
 
-    public void Remove(int carId)
+    public Task Remove(int carId)
     {
-      _cars.Remove(_cars.Find(car => car.Id == carId));
+      var carIndex = _cars.FindIndex(car => car.Id == carId);
+      if (carIndex == -1)
+      {
+        throw new IndexOutOfRangeException("Car not found");
+      }
+
+      _cars.RemoveAt(carIndex);
+      return Task.CompletedTask;
     }
   }
 }

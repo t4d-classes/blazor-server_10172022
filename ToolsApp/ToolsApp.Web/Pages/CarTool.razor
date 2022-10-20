@@ -11,61 +11,50 @@
 <ToolHeader HeaderText="Car Tool" />
 
 <CarTable Cars="@cars" EditCarId="@editCarId"
-  OnSaveCar="@SaveCar" OnCancelCar="@CancelCar"
-  OnEditCar="@EditCar" OnDeleteCar="@DeleteCar" />
+  OnSaveCar="@saveCar" OnCancelCar="@cancelCar"
+  OnEditCar="@editCar" OnDeleteCar="@deleteCar" />
 
-<CarForm ButtonText="Add Car" OnSubmitCar="@AddCar" />
+<CarForm ButtonText="Add Car" OnSubmitCar="@addCar" />
 
 @code {
-
-  private CarFormModel carForm = new();
 
   private int editCarId { get; set; } = -1;
 
   private IEnumerable<ICar> cars { get; set; } = new List<ICar>();
 
-  protected override void OnInitialized()
+  protected override async Task OnInitializedAsync()
   {
-    cars = carsInMemoryData.All();
+    cars = await carsInMemoryData.All();
   }
 
-  public void EditCar(int carId)
+  private void editCar(int carId)
   {
     editCarId = carId;
   }
 
-  public void CancelCar()
+  private void cancelCar()
   {
     editCarId = -1;
   }
 
-  public void AddCar(INewCar newCar)
+  private async void addCar(INewCar newCar)
   {
-    carsInMemoryData.Append(newCar);
-    cars = carsInMemoryData.All();
+    await carsInMemoryData.Append(newCar);
+    cars = await carsInMemoryData.All();
     editCarId = -1;
   }
 
-  public void SaveCar(ICar car)
+  private async void saveCar(ICar car)
   {
-    carsInMemoryData.Replace(car);
-    cars = carsInMemoryData.All();
+    await carsInMemoryData.Replace(car);
+    cars = await carsInMemoryData.All();
     editCarId = -1;
   }
 
-  public void DeleteCar(int carId)
+  private async void deleteCar(int carId)
   {
-    carsInMemoryData.Remove(carId);
-    cars = carsInMemoryData.All();
+    await carsInMemoryData.Remove(carId);
+    cars = await carsInMemoryData.All();
     editCarId = -1;
   }
-
-  class CarFormModel {
-    public string Make { get; set; }
-    public string Model { get; set; }
-    public int Year { get; set; }
-    public string Color { get; set; }
-    public decimal Price { get; set; }
-  }
-
 }

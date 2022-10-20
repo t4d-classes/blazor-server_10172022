@@ -4,8 +4,8 @@ namespace ToolsApp.Core.Interfaces.Data;
 
 public interface ICarsData
 {
-  IEnumerable<ICar> All();
-  ICar Append(INewCar newCar);
-  void Replace(ICar car);
-  void Remove(int carId);
+  Task<IEnumerable<ICar>> All();
+  Task<ICar> Append(INewCar newCar);
+  Task Replace(ICar car);
+  Task Remove(int carId);
 }
