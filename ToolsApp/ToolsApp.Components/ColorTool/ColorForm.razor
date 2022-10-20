@@ -6,16 +6,18 @@
 <EditForm Model="@colorForm" OnValidSubmit="@submitColor">
 
   <DataAnnotationsValidator />
-  <ValidationSummary />
+  @*<ValidationSummary />*@
 
   <label>
     Name:
     <InputText @bind-Value="colorForm.Name" />
+    <ValidationMessage For="@(() => colorForm.Name)" />
   </label>
   
   <label>
     Hex Code:
     <InputText @bind-Value="colorForm.HexCode" />
+    <ValidationMessage For="@(() => colorForm.HexCode)" />
   </label>
   
   <button>@ButtonText</button>
@@ -51,9 +53,13 @@
   class ColorFormModel
   {
     [Required]
-    public string Name { get; set; }
+    [MinLength(3, ErrorMessage = "Color name must be at least three characters.")]
+    public string Name { get; set; } = "";
+    
     [Required]
-    public string HexCode { get; set; }
+    //[RegularExpression(@"^[0-9a-fA-F]{6}$", ErrorMessage = "Color hexcode is RRGGBB.")]
+    [HexString(6)]
+    public string HexCode { get; set; } = "";
   }
 
 }
