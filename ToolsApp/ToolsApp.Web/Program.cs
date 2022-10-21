@@ -6,20 +6,23 @@ using Microsoft.EntityFrameworkCore;
 using ToolsApp.Core.Interfaces.Data;
 using ToolsApp.Data;
 using ToolsApp.Web.Data;
+using ToolsApp.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Scoped Service
-builder.Services.AddDbContext<ToolsAppDbContext>(options => {
-  options.UseSqlServer(builder.Configuration["ConnectionString"]);
-});
+//builder.Services.AddDbContext<ToolsAppDbContext>(options => {
+//  options.UseSqlServer(builder.Configuration["ConnectionString"]);
+//});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddScoped<ScreenBlocker>();
 
+builder.Services.AddSingleton<ToolsAppDapperContext>();
 
 if (builder.Configuration["ConnectionString"] == "in-memory")
 {
@@ -28,8 +31,10 @@ if (builder.Configuration["ConnectionString"] == "in-memory")
 }
 else
 {
-  builder.Services.AddScoped<IColorsData, ColorsSqlDatabaseData>();
-  builder.Services.AddScoped<ICarsData, CarsSqlDatabaseData>();
+  //builder.Services.AddScoped<IColorsData, ColorsSqlDatabaseData>();
+  //builder.Services.AddScoped<ICarsData, CarsSqlDatabaseData>();
+  builder.Services.AddSingleton<IColorsData, ColorsDapperData>();
+  builder.Services.AddSingleton<ICarsData, CarsDapperData>();
 }
 
 

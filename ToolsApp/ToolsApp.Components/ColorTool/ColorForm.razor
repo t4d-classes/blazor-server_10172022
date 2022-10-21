@@ -1,5 +1,8 @@
 ﻿@using AutoMapper;
 
+@using Microsoft.JSInterop;
+@inject IJSRuntime JS;
+
 <EditForm Model="@colorForm" OnValidSubmit="@submitColor">
 
   <DataAnnotationsValidator />
@@ -7,7 +10,7 @@
 
   <label>
     Name:
-    <InputText @bind-Value="colorForm.Name" />
+    <InputText id="colorFormName" @bind-Value="colorForm.Name" />
     <ValidationMessage For="@(() => colorForm.Name)" />
   </label>
   
@@ -40,6 +43,14 @@
     });
 
     mapper = mapperConfig.CreateMapper();
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      await JS.InvokeVoidAsync("app.setFocus", "#colorFormName");
+    }
   }
 
   private async Task submitColor()

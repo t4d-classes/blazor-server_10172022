@@ -1,7 +1,11 @@
-﻿@page "/color-tool"
-@using ToolsApp.Core.Interfaces.Data
+﻿@page "/color-tool/{toolNum}"
 
-@inject IColorsData colorsInMemoryData
+@using ToolsApp.Core.Interfaces.Data
+@using Microsoft.JSInterop
+
+@inject IColorsData colorsData
+@inject ScreenBlocker ScreenBlocker
+@inject IJSRuntime JS
 
 <ToolHeader HeaderText="@colorToolHeader"></ToolHeader>
 <ColorList Colors="@colors" OnDeleteColor="@DeleteColor" />
@@ -11,27 +15,64 @@
   <div>@(1 + 3)</div>
 }*@
 
+<button type="button" id="refreshColorsButton">Refresh Color</button>
+
 @code {
+
+  [Parameter]
+  public string ToolNum { get; set; }
+
+  private bool _firstRender = true;
 
   private string colorToolHeader = "Color Tool";
 
+  private DotNetObjectReference<IColorsData> colorsDataRef;
+
   private IEnumerable<IColor> colors { get; set; } = new List<IColor>();
 
-  protected override async Task OnInitializedAsync()
+  protected override async Task OnParametersSetAsync()
   {
-    colors = await colorsInMemoryData.All();
+    colorToolHeader = "Color Tool " + ToolNum;
+
+    if (!_firstRender) {
+      await RefreshColors();
+    }
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    colorsDataRef = DotNetObjectReference.Create(colorsData);
+
+    if (firstRender) {
+      await JS.InvokeVoidAsync("app.setupColorsRefresh", colorsDataRef);
+      _firstRender = false;
+      await RefreshColors();
+      StateHasChanged();
+    }
+  }
+
+  public async Task RefreshColors()
+  {
+    await ScreenBlocker.BlockScreen();
+    colors = await colorsData.All();
+    await Task.Delay(1000);
+    await ScreenBlocker.UnblockScreen();
   }
 
   public async Task AddColor(INewColor newColor)
   {
-    await colorsInMemoryData.Append(newColor);
-    colors = await colorsInMemoryData.All();
+    await colorsData.Append(newColor);
+    await RefreshColors();
+
   }
 
   public async Task DeleteColor(int colorId)
   {
-    await colorsInMemoryData.Remove(colorId);
-    colors = await colorsInMemoryData.All();
+    if (await JS.InvokeAsync<bool>("confirm", "Are you sure you want to delete the color?"))
+    {
+      await colorsData.Remove(colorId);
+      await RefreshColors();
+    }
   }
 
 
