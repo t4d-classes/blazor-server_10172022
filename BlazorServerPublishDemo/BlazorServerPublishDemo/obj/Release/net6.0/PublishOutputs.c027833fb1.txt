@@ -1,0 +1,7 @@
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\BlazorServerPublishDemo.exe
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\appsettings.Development.json
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\appsettings.json
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\BlazorServerPublishDemo.dll
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\BlazorServerPublishDemo.deps.json
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\BlazorServerPublishDemo.runtimeconfig.json
+C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\obj\Release\net6.0\PubTmp\Out\BlazorServerPublishDemo.pdb

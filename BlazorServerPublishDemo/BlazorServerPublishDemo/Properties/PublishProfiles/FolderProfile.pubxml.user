@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\EricGreene\source\repos\blazor-server_10172022\BlazorServerPublishDemo\BlazorServerPublishDemo\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2022-10-21T19:58:44.9397612Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>
