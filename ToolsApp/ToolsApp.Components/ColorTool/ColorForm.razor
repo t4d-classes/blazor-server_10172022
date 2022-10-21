@@ -1,12 +1,9 @@
 ﻿@using AutoMapper;
 
-@using ToolsApp.Core.Interfaces.Models
-@using ToolsApp.Models;
-
 <EditForm Model="@colorForm" OnValidSubmit="@submitColor">
 
   <DataAnnotationsValidator />
-  @*<ValidationSummary />*@
+  <ValidationSummary />
 
   <label>
     Name:
@@ -48,6 +45,7 @@
   private async Task submitColor()
   {
     await OnSubmitColor.InvokeAsync(mapper.Map<NewColor>(colorForm));
+    colorForm = new();
   }
 
   class ColorFormModel

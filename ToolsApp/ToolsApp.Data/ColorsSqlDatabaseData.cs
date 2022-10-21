@@ -2,63 +2,55 @@
 using ToolsApp.Core.Interfaces.Models;
 using ToolsApp.Models;
 
-using CarModel = ToolsApp.Models.Car;
-using CarDataModel = ToolsApp.Data.Models.Car;
+using ColorModel = ToolsApp.Models.Color;
+using ColorDataModel = ToolsApp.Data.Models.Color;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToolsApp.Data
 {
-  public class CarsSqlDatabaseData : ICarsData
+  public class ColorsSqlDatabaseData : IColorsData
   {
     private IMapper _mapper;
     private ToolsAppDbContext _toolsAppDbContext;
 
-    public CarsSqlDatabaseData(ToolsAppDbContext toolsAppDbContext)
+    public ColorsSqlDatabaseData(ToolsAppDbContext toolsAppDbContext)
     {
       _toolsAppDbContext = toolsAppDbContext;
 
       var mapperConfig = new MapperConfiguration(config => {
-        config.CreateMap<INewCar, CarDataModel>();
-        config.CreateMap<ICar, CarDataModel>();
-        config.CreateMap<CarDataModel, CarModel>().ReverseMap();
+        config.CreateMap<INewColor, ColorDataModel>();
+        config.CreateMap<IColor, ColorDataModel>();
+        config.CreateMap<ColorDataModel, ColorModel>().ReverseMap();
       });
 
       _mapper = mapperConfig.CreateMapper();
     }
 
-    public async Task<IEnumerable<ICar>> All()
+    public async Task<IEnumerable<IColor>> All()
     {
       return await _toolsAppDbContext
-        .Cars
-        .Select(carDataModel => _mapper.Map<CarDataModel, CarModel>(carDataModel))
+        .Colors
+        .Select(colorDataModel => _mapper.Map<ColorDataModel, ColorModel>(colorDataModel))
         .AsNoTracking()
         .ToListAsync();    
     }
 
-    public async Task<ICar> Append(INewCar newCar)
+    public async Task<IColor> Append(INewColor newColor)
     {
-      var newCarDataModel = _mapper.Map<CarDataModel>(newCar);
+      var newColorDataModel = _mapper.Map<ColorDataModel>(newColor);
 
-      await _toolsAppDbContext.AddAsync(newCarDataModel);
+      await _toolsAppDbContext.AddAsync(newColorDataModel);
       await _toolsAppDbContext.SaveChangesAsync();
       _toolsAppDbContext.ChangeTracker.Clear();
 
-      return _mapper.Map<CarDataModel, CarModel>(newCarDataModel);
+      return _mapper.Map<ColorDataModel, ColorModel>(newColorDataModel);
     }
 
-    public async Task Replace(ICar car)
+    public async Task Remove(int colorId)
     {
-      var carDataModel = _mapper.Map<CarDataModel>(car);
-      _toolsAppDbContext.Update(carDataModel);
-      await _toolsAppDbContext.SaveChangesAsync();
-      _toolsAppDbContext.ChangeTracker.Clear();
-    }
-
-    public async Task Remove(int carId)
-    {
-      var carDataModel = await _toolsAppDbContext.Cars.FindAsync(carId);
-      _toolsAppDbContext.Cars.Remove(carDataModel);
+      var colorDataModel = await _toolsAppDbContext.Colors.FindAsync(colorId);
+      _toolsAppDbContext.Colors.Remove(colorDataModel);
       await _toolsAppDbContext.SaveChangesAsync();
       _toolsAppDbContext.ChangeTracker.Clear();
     }
